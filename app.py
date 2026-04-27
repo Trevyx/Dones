@@ -1,15 +1,18 @@
-from antigravity import WebApp
+import http.server
+import socketserver
 import os
 
-# Inicializamos la aplicación de Antigravity
-app = WebApp(__name__)
+# Configuración del puerto para Render
+PORT = int(os.environ.get("PORT", 8080))
 
-# Ruta para mostrar tu index.html
-@app.route('/')
-def index():
-    return app.render('index.html')
+class MyHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        # Si entran a la raíz, les servimos el index.html
+        if self.path == '/':
+            self.path = '/templates/index.html'
+        return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
-if __name__ == "__main__":
-    # Usamos el puerto que nos da Render
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host='0.0.0.0', port=port)
+# Iniciamos el servidor
+with socketserver.TCPServer(("", PORT), MyHandler) as httpd:
+    print(f"Servidor activo en el puerto {PORT}")
+    httpd.serve_forever()
