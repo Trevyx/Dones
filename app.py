@@ -1,21 +1,15 @@
-import antigravity
+from antigravity import WebApp
 import os
 
-# Configuramos la aplicación
-app = antigravity.app()
+# Inicializamos la aplicación de Antigravity
+app = WebApp(__name__)
 
-# Esta ruta le dice a la web que muestre tu index.html al entrar
+# Ruta para mostrar tu index.html
 @app.route('/')
 def index():
-    return antigravity.render('index.html')
-
-# Aquí es donde pondremos la lógica para guardar los datos de organizadores
-@app.route('/guardar_organizador', methods=['POST'])
-def guardar():
-    # Lógica para guardar en la base de datos (lo veremos en el siguiente paso)
-    return "Datos guardados con éxito"
+    return app.render('index.html')
 
 if __name__ == "__main__":
-    # Importante para Render: usa el puerto que ellos nos den
+    # Usamos el puerto que nos da Render
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
